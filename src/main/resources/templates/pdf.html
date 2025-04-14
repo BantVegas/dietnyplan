@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Diétny plán</title>
+    <style>
+        body {
+            font-family: DejaVu Sans, sans-serif;
+            padding: 20px;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .day {
+            margin-top: 30px;
+            padding: 10px;
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #888;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+<h1>7-dňový diétny plán</h1>
+<div th:utext="${structuredPlan}"></div>
+<div th:utext="${shoppingListHtml}"></div>
+</body>
+</html>
