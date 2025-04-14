@@ -15,7 +15,7 @@ public class DietController {
         this.stripeService = stripeService;
     }
 
-    @GetMapping("/") // ← TOTO je to, čo ti chýba
+    @GetMapping("/")
     public String showForm(Model model) {
         model.addAttribute("dietRequest", new DietRequest());
         return "form"; // zobrazí templates/form.html
@@ -24,22 +24,37 @@ public class DietController {
     @PostMapping("/generate")
     public String redirectToStripe(@ModelAttribute DietRequest dietRequest, Model model) {
         try {
-            String checkoutUrl = stripeService.createCheckoutSession(dietRequest.getEmail());
-            return "redirect:" + checkoutUrl;
+            String email = dietRequest.getEmail();
+            System.out.println("🟡 Vygenerovaný email: " + email);
+
+            String checkoutUrl = stripeService.createCheckoutSession(email);
+            System.out.println("➡️ checkoutUrl = " + checkoutUrl);
+
+            if (checkoutUrl != null && checkoutUrl.startsWith("https://")) {
+                return "redirect:" + checkoutUrl;
+            } else {
+                model.addAttribute("error", "Nepodarilo sa vytvoriť Stripe Checkout session.");
+                return "form";
+            }
+
         } catch (Exception e) {
-            model.addAttribute("error", "Nepodarilo sa vytvoriť Stripe checkout session.");
+            System.out.println("❌ Výnimka pri vytváraní Stripe session: " + e.getMessage());
+            e.printStackTrace();
+            model.addAttribute("error", "Nastala chyba pri spracovaní požiadavky.");
             return "form";
         }
     }
 
     @GetMapping("/success")
     public String success(Model model, @RequestParam("session_id") String sessionId) {
+        System.out.println("✅ SUCCESS page loaded with session_id: " + sessionId);
         model.addAttribute("message", "Platba úspešná! Plán ti bol odoslaný na email.");
         return "success";
     }
 
     @GetMapping("/cancel")
     public String cancel() {
+        System.out.println("⚠️ Platba bola zrušená používateľom.");
         return "cancel";
     }
 }
