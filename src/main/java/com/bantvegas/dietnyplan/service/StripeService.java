@@ -18,25 +18,31 @@ public class StripeService {
     @Value("${stripe.cancel-url}")
     private String cancelUrl;
 
-    public String createCheckoutSession(String email) throws Exception {
-        // Nastavenie API kľúča
-        Stripe.apiKey = stripeSecretKey;
+    public String createCheckoutSession(String email) {
+        try {
+            Stripe.apiKey = stripeSecretKey;
 
-        // Vytvorenie Stripe Checkout session
-        SessionCreateParams params = SessionCreateParams.builder()
-                .setMode(SessionCreateParams.Mode.PAYMENT)
-                .setSuccessUrl(successUrl)
-                .setCancelUrl(cancelUrl)
-                .addLineItem(
-                        SessionCreateParams.LineItem.builder()
-                                .setPrice("price_1RDpPP11bNoUWC3yE5EUcgl3") // ← tvoje LIVE Price ID
-                                .setQuantity(1L)
-                                .build()
-                )
-                .setCustomerEmail(email)
-                .build();
+            SessionCreateParams params = SessionCreateParams.builder()
+                    .setMode(SessionCreateParams.Mode.PAYMENT) // ✅ jednorazová platba
+                    .setSuccessUrl(successUrl)
+                    .setCancelUrl(cancelUrl)
+                    .addLineItem(
+                            SessionCreateParams.LineItem.builder()
+                                    .setPrice("price_1RDsuS11bNoUWC3y3yBih3s2") // ✅ nový one-time price ID
+                                    .setQuantity(1L)
+                                    .build()
+                    )
+                    .setCustomerEmail(email)
+                    .build();
 
-        Session session = Session.create(params);
-        return session.getUrl();
+            Session session = Session.create(params);
+            System.out.println("✅ Stripe Checkout URL: " + session.getUrl());
+            return session.getUrl();
+
+        } catch (Exception e) {
+            System.out.println("❌ Chyba pri vytváraní Stripe session: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
     }
 }
