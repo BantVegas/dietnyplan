@@ -2,10 +2,9 @@ package com.bantvegas.dietnyplan.service;
 
 import com.bantvegas.dietnyplan.model.DietRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
@@ -35,10 +34,13 @@ public class DietService {
                     .uri("/v1/chat/completions")
                     .bodyValue(requestBody)
                     .retrieve()
-                    .onStatus(HttpStatus::isError, res -> res.bodyToMono(String.class).map(body -> {
-                        System.err.println("❌ Chyba OpenAI: " + body);
-                        return new RuntimeException("OpenAI error: " + body);
-                    }))
+                    .onStatus(
+                            status -> status.is4xxClientError() || status.is5xxServerError(),
+                            res -> res.bodyToMono(String.class).map(body -> {
+                                System.err.println("❌ Chyba OpenAI: " + body);
+                                return new RuntimeException("OpenAI error: " + body);
+                            })
+                    )
                     .bodyToMono(Map.class)
                     .retryWhen(Retry.backoff(3, Duration.ofSeconds(2)))
                     .block();
@@ -94,7 +96,7 @@ public class DietService {
         );
     }
 
-    // 🔍 TEST ENDPOINT – len na diagnostiku modelu
+    // 🔍 TEST ENDPOINT – diagnostika použitého modelu
     public String testModelName() {
         try {
             Map<String, Object> requestBody = Map.of(
