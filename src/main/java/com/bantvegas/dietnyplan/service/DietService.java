@@ -2,10 +2,13 @@ package com.bantvegas.dietnyplan.service;
 
 import com.bantvegas.dietnyplan.model.DietRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +23,7 @@ public class DietService {
             String prompt = buildPrompt(req);
 
             Map<String, Object> requestBody = Map.of(
-                    "model", "gpt-3.5-turbo",
+                    "model", "gpt-4o",
                     "messages", List.of(
                             Map.of("role", "system", "content", "Si výživový poradca."),
                             Map.of("role", "user", "content", prompt)
@@ -28,11 +31,16 @@ public class DietService {
                     "max_tokens", 2000
             );
 
-            Map<String, Object> response = openAiWebClient
-                    .post()
+            Map<String, Object> response = openAiWebClient.post()
+                    .uri("/v1/chat/completions")
                     .bodyValue(requestBody)
                     .retrieve()
+                    .onStatus(HttpStatus::isError, res -> res.bodyToMono(String.class).map(body -> {
+                        System.err.println("❌ Chyba OpenAI: " + body);
+                        return new RuntimeException("OpenAI error: " + body);
+                    }))
                     .bodyToMono(Map.class)
+                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(2)))
                     .block();
 
             List<Map<String, Object>> choices = (List<Map<String, Object>>) response.get("choices");
@@ -84,5 +92,30 @@ public class DietService {
                 req.getPreferences(),
                 req.getAllergies()
         );
+    }
+
+    // 🔍 TEST ENDPOINT – len na diagnostiku modelu
+    public String testModelName() {
+        try {
+            Map<String, Object> requestBody = Map.of(
+                    "model", "gpt-4o",
+                    "messages", List.of(Map.of("role", "user", "content", "Ahoj")),
+                    "max_tokens", 5
+            );
+
+            Map<String, Object> response = openAiWebClient.post()
+                    .uri("/v1/chat/completions")
+                    .bodyValue(requestBody)
+                    .retrieve()
+                    .bodyToMono(Map.class)
+                    .block();
+
+            String modelUsed = (String) response.get("model");
+            return "✅ Použitý model: " + modelUsed;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "❌ Chyba pri overení modelu: " + e.getMessage();
+        }
     }
 }

@@ -25,43 +25,44 @@ public class DietController {
     @Autowired
     private DietService dietService;
 
-    // ✅ ROOT MAPPING - zobrazí formulár
+    // 🌐 Homepage – formulár
     @GetMapping("/")
     public String home(Model model) {
         model.addAttribute("dietRequest", new DietRequest());
-        return "index";
+        return "index"; // alebo "form", ak máš inak nazvaný HTML súbor
     }
 
-    // ✅ SPRACOVANIE FORMULÁRA S VALIDÁCIOU
+    // 📥 Odoslanie formulára
     @PostMapping("/generate")
-    public String handleForm(@Valid @ModelAttribute DietRequest dietRequest, BindingResult result, Model model) {
+    public String handleForm(@Valid @ModelAttribute DietRequest dietRequest,
+                             BindingResult result, Model model) {
         if (result.hasErrors()) {
             return "index";
         }
 
-        String plan = dietService.generatePlan(dietRequest);
-        byte[] pdf = new byte[0];
         try {
-            pdf = pdfService.generatePdf(plan);
+            String plan = dietService.generatePlan(dietRequest);
+            byte[] pdf = pdfService.generatePdf(plan);
             mailService.sendPdf(dietRequest.getEmail(), pdf);
+
+            model.addAttribute("plan", plan);
+            model.addAttribute("shoppingListHtml", ""); // alebo z PdfService ak potrebuješ
+            return "vygenerovany";
+
         } catch (Exception e) {
             e.printStackTrace();
+            model.addAttribute("message", "❌ Vyskytla sa chyba pri generovaní plánu.");
+            return "error"; // môžeš vytvoriť error.html ak chceš
         }
-
-        model.addAttribute("plan", plan);
-        model.addAttribute("shoppingListHtml", "");
-        return "vygenerovany";
     }
 
+    // ✅ Stripe success handler
     @GetMapping("/success")
     public String success(Model model, @RequestParam("session_id") String sessionId) {
         try {
             Stripe.apiKey = System.getenv("STRIPE_SECRET_KEY");
             Session session = Session.retrieve(sessionId);
             String email = session.getCustomerEmail();
-
-            System.out.println("✅ SUCCESS page loaded with session_id: " + sessionId);
-            System.out.println("📧 Email z platby: " + email);
 
             String plan = dietService.generatePlanForEmail(email);
             byte[] pdf = pdfService.generatePdf(plan);
@@ -75,5 +76,18 @@ public class DietController {
             model.addAttribute("message", "Platba prebehla, ale plán sa nepodarilo odoslať.");
             return "success";
         }
+    }
+
+    // ❌ Stripe cancel handler
+    @GetMapping("/cancel")
+    public String cancel() {
+        return "cancel";
+    }
+
+    // 🔍 Test endpoint – zistí aký model používaš
+    @GetMapping("/check-model")
+    @ResponseBody
+    public String checkModel() {
+        return dietService.testModelName();
     }
 }
