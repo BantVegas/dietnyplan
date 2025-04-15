@@ -6,9 +6,11 @@ import com.bantvegas.dietnyplan.service.MailService;
 import com.bantvegas.dietnyplan.service.PdfService;
 import com.stripe.Stripe;
 import com.stripe.model.checkout.Session;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -23,19 +25,44 @@ public class DietController {
     @Autowired
     private DietService dietService;
 
+    // ✅ ROOT MAPPING - zobrazí formulár
+    @GetMapping("/")
+    public String home(Model model) {
+        model.addAttribute("dietRequest", new DietRequest());
+        return "index";
+    }
+
+    // ✅ SPRACOVANIE FORMULÁRA S VALIDÁCIOU
+    @PostMapping("/generate")
+    public String handleForm(@Valid @ModelAttribute DietRequest dietRequest, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            return "index";
+        }
+
+        String plan = dietService.generatePlan(dietRequest);
+        byte[] pdf = new byte[0];
+        try {
+            pdf = pdfService.generatePdf(plan);
+            mailService.sendPdf(dietRequest.getEmail(), pdf);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        model.addAttribute("plan", plan);
+        model.addAttribute("shoppingListHtml", "");
+        return "vygenerovany";
+    }
+
     @GetMapping("/success")
     public String success(Model model, @RequestParam("session_id") String sessionId) {
         try {
-            // nastav Stripe API key
             Stripe.apiKey = System.getenv("STRIPE_SECRET_KEY");
-
             Session session = Session.retrieve(sessionId);
             String email = session.getCustomerEmail();
 
             System.out.println("✅ SUCCESS page loaded with session_id: " + sessionId);
             System.out.println("📧 Email z platby: " + email);
 
-            // Vygeneruj plán a pošli PDF
             String plan = dietService.generatePlanForEmail(email);
             byte[] pdf = pdfService.generatePdf(plan);
             mailService.sendPdf(email, pdf);
