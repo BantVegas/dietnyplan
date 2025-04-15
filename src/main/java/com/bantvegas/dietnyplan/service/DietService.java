@@ -1,11 +1,8 @@
 package com.bantvegas.dietnyplan.service;
 
 import com.bantvegas.dietnyplan.model.DietRequest;
-import com.bantvegas.dietnyplan.util.HtmlPlanFormatter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Map;
@@ -13,26 +10,18 @@ import java.util.Map;
 @Service
 public class DietService {
 
-    @Autowired
-    private WebClient openAiWebClient;
-
     public String generatePlan(DietRequest req) {
-        String prompt = buildPrompt(req);
-
-        Mono<Map> response = openAiWebClient.post()
-                .bodyValue(Map.of(
-                        "model", "gpt-3.5-turbo",
-                        "messages", List.of(Map.of(
-                                "role", "user",
-                                "content", prompt
-                        ))
-                ))
-                .retrieve()
-                .bodyToMono(Map.class);
-
-        Map result = response.block();
-
         try {
+            // Tu voláš AI API a spracúvaš odpoveď (príkladový placeholder)
+            RestTemplate restTemplate = new RestTemplate();
+            String prompt = buildPrompt(req);
+
+            Map result = restTemplate.postForObject("https://api.openai.com/v1/completions", Map.of(
+                    "model", "gpt-3.5-turbo",
+                    "prompt", prompt,
+                    "max_tokens", 2000
+            ), Map.class);
+
             Map choice = (Map) ((List) result.get("choices")).get(0);
             Map message = (Map) choice.get("message");
             return (String) message.get("content");
@@ -41,33 +30,45 @@ public class DietService {
         }
     }
 
+    public String generatePlanForEmail(String email) {
+        DietRequest demo = new DietRequest();
+        demo.setName("Auto_generované");
+        demo.setAge(30);
+        demo.setGender("muž");
+        demo.setHeight(175);
+        demo.setWeight(78);
+        demo.setGoal("schudnúť");
+        demo.setPreferences(""); // môžeš prispôsobiť
+        demo.setAllergies("");   // môžeš prispôsobiť
+        demo.setEmail(email);
+
+        return generatePlan(demo);
+    }
+
     private String buildPrompt(DietRequest req) {
         return String.format("""
-            Vygeneruj 7-dňový diétny plán pre %s (%d rokov), %.1f kg, %.1f cm, cieľ: %s.
-            Preferencie: %s. Alergie/intolerancie: %s.
+                Vygeneruj prosím diétny plán na 7 dní pre osobu s týmito údajmi:
+                - Meno: %s
+                - Vek: %d
+                - Pohlavie: %s
+                - Výška: %.2f cm
+                - Váha: %.2f kg
+                - Cieľ: %s
+                - Preferencie: %s
+                - Alergie: %s
+                - Email: %s
 
-            Pre každý deň uveď 5 jedál: Raňajky, Desiata, Obed, Olovrant, Večera.
-
-            Ku každému jedlu:
-            - Napíš čo sa má zjesť
-            - Uveď orientačné gramáže (napr. 80g kuracie prsia, 150g ryža)
-            - A aj celkové kcal (napr. 450 kcal)
-
-            Príklad:
-            Raňajky: Ovsená kaša s banánom – 80g ovsených vločiek, 150ml mlieka (350 kcal)
-            Desiata: Tvaroh s medom – 100g tvarohu, 10g medu (200 kcal)
-            Obed: Kuracie prsia s ryžou – 150g kuracie mäso, 100g ryža, 50g zelenina (600 kcal)
-
-            Zobrazenie nech je vo formáte:
-            Deň 1:
-            Raňajky: ...
-            Desiata: ...
-            Obed: ...
-            Olovrant: ...
-            Večera: ...
-            """,
-                req.getGender(), req.getAge(), req.getWeight(), req.getHeight(),
-                req.getGoal(), req.getPreferences(), req.getAllergies()
+                Odpoveď v zrozumiteľnom a štruktúrovanom formáte.
+                """,
+                req.getName(),
+                req.getAge(),
+                req.getGender(),
+                req.getHeight(),
+                req.getWeight(),
+                req.getGoal(),
+                req.getPreferences(),
+                req.getAllergies(),
+                req.getEmail()
         );
     }
 }
