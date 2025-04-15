@@ -15,7 +15,8 @@ public class OpenAiConfig {
     @PostConstruct
     public void checkApiKey() {
         if (apiKey == null || apiKey.isBlank()) {
-            System.out.println("❌ OPENAI_API_KEY NIE JE nastavený!");
+            System.err.println("❌ OPENAI_API_KEY NIE JE nastavený! Zastavujem aplikáciu.");
+            throw new IllegalStateException("OPENAI_API_KEY chýba");
         } else {
             System.out.println("✅ OPENAI_API_KEY načítaný.");
         }
