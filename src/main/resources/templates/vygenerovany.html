@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Vygenerovaný plán</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
+
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-10">
@@ -13,15 +15,18 @@
                 <div class="card-body">
                     <h2 class="text-center mb-4">📋 Tvoj diétny plán</h2>
 
-                    <div class="text-end mb-3">
-                        <a class="btn btn-outline-primary" th:href="@{/download-pdf(plan=${plan})}">📄 Stiahnuť ako PDF</a>
+                    <!-- Tlačidlo na stiahnutie PDF, len ak máme token -->
+                    <div class="text-end mb-3" th:if="${pdfToken != null}">
+                        <a class="btn btn-outline-primary" th:href="@{/download-pdf(token=${pdfToken})}">📄 Stiahnuť ako PDF</a>
                     </div>
 
+                    <!-- Výstup plánu -->
                     <div class="mb-4">
                         <pre class="bg-white p-3 border rounded" th:text="${plan}"></pre>
                     </div>
 
-                    <div class="mb-4" th:utext="${shoppingListHtml}"></div>
+                    <!-- Nákupný zoznam -->
+                    <div class="mb-4" th:if="${shoppingListHtml != null}" th:utext="${shoppingListHtml}"></div>
 
                     <div class="text-center">
                         <a href="/" class="btn btn-success">Späť na formulár</a>
@@ -31,5 +36,6 @@
         </div>
     </div>
 </div>
+
 </body>
 </html>

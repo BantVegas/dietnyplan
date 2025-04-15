@@ -1,3 +1,5 @@
+// DietService.java – rozšírené o možnosť uchovať plán pre stiahnutie ako PDF
+
 package com.bantvegas.dietnyplan.service;
 
 import com.bantvegas.dietnyplan.model.DietRequest;
@@ -8,14 +10,20 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @RequiredArgsConstructor
 public class DietService {
 
     private final WebClient openAiWebClient;
+
+    // 📦 Lokálny storage plánov (dočasný) pre stiahnutie ako PDF cez token
+    private final Map<String, String> planStorage = new ConcurrentHashMap<>();
 
     public String generatePlan(DietRequest req) {
         try {
@@ -47,7 +55,6 @@ public class DietService {
 
             List<Map<String, Object>> choices = (List<Map<String, Object>>) response.get("choices");
             Map<String, Object> message = (Map<String, Object>) choices.get(0).get("message");
-
             return (String) message.get("content");
 
         } catch (Exception e) {
@@ -69,6 +76,16 @@ public class DietService {
         demo.setEmail(email);
 
         return generatePlan(demo);
+    }
+
+    public String storePlan(String plan) {
+        String token = UUID.randomUUID().toString();
+        planStorage.put(token, plan);
+        return token;
+    }
+
+    public String getPlanByToken(String token) {
+        return planStorage.get(token);
     }
 
     private String buildPrompt(DietRequest req) {
@@ -96,7 +113,6 @@ public class DietService {
         );
     }
 
-    // 🔍 TEST ENDPOINT – diagnostika použitého modelu
     public String testModelName() {
         try {
             Map<String, Object> requestBody = Map.of(
