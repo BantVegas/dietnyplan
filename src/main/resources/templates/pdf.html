@@ -7,36 +7,40 @@
         body {
             font-family: DejaVu Sans, sans-serif;
             font-size: 12px;
-            line-height: 1.6;
             margin: 2cm;
+            line-height: 1.6;
             color: #333;
         }
-        h1, h2, h3 {
-            color: #2c3e50;
-            margin-bottom: 0.5em;
-        }
-        h1 {
+        .header-box {
+            border: 1px solid #999;
+            padding: 10px;
+            margin-bottom: 30px;
             text-align: center;
-            margin-bottom: 1.5em;
         }
-        .plan-section {
-            margin-bottom: 2em;
+        .header-box h1 {
+            margin: 5px 0;
+        }
+        .day-section {
+            margin-bottom: 20px;
+        }
+        .shopping-section {
+            margin-top: 40px;
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 1em;
+            margin-top: 10px;
         }
         th, td {
             border: 1px solid #999;
-            padding: 6px 10px;
+            padding: 6px;
             text-align: left;
         }
         th {
-            background-color: #f2f2f2;
+            background-color: #eee;
         }
         .footer {
-            margin-top: 3em;
+            margin-top: 40px;
             text-align: center;
             font-size: 10px;
             color: #777;
@@ -45,19 +49,26 @@
 </head>
 <body>
 
-<h1>Diétny plán na 7 dní</h1>
-
-<div class="plan-section" th:utext="${structuredPlan}">
-    <!-- Štruktúrovaný plán sa vloží sem -->
+<div class="header-box">
+    <h1>Diétny plán</h1>
+    <h2>pre Martina</h2>
+    <p>(schudnúť, 78 kg)</p>
 </div>
 
-<h2>Nákupný zoznam</h2>
-<div class="plan-section" th:utext="${shoppingListHtml}">
-    <!-- HTML tabuľka s nákupným zoznamom -->
+<div class="day-section" th:utext="${structuredPlan}">
+    <!-- Vygenerovaný plán sa sem vloží -->
+</div>
+
+<div class="shopping-section">
+    <h2>🛒 Nákupný zoznam</h2>
+    <div th:utext="${shoppingListHtml}">
+        <!-- HTML tabuľka s nákupným zoznamom -->
+    </div>
 </div>
 
 <div class="footer">
-    Tento plán bol vygenerovaný automaticky pomocou AI na stránke dietnyplan.sk
+    Tento plán bol vygenerovaný automaticky pomocou AI<br/>
+    dňa: <span th:text="${#dates.format(#dates.createNow(), 'd. M. yyyy')}"></span> na stránke dietnyplan.sk
 </div>
 
 </body>
