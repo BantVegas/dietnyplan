@@ -34,6 +34,10 @@
             font-size: 14px;
             color: #555;
         }
+        .logo {
+            max-height: 50px;
+            margin-bottom: 10px;
+        }
         .day-section h3 {
             margin-top: 20px;
             font-size: 16px;
@@ -42,6 +46,9 @@
         .day-section ul {
             list-style-type: disc;
             padding-left: 20px;
+        }
+        .day-section {
+            page-break-inside: avoid;
         }
         h2 {
             margin-top: 30px;
@@ -88,9 +95,10 @@
 <body>
 
 <div class="header-box">
+    <img src="logo.png" alt="logo" class="logo" th:src="@{/logo.png}" />
     <h1>Diétny plán</h1>
-    <h2>pre Martina</h2>
-    <p>(schudnúť, 78 kg)</p>
+    <h2>pre <span th:text="${name}">Martina</span></h2>
+    <p>(<span th:text="${goal}">schudnúť</span>, <span th:text="${weight}">78</span> kg)</p>
 </div>
 
 <div class="day-section" th:utext="${structuredPlan}">
@@ -99,6 +107,7 @@
 
 <div class="shopping-section">
     <h2>🛒 Nákupný zoznam</h2>
+    <p>Počet položiek: <span th:text="${shoppingItemCount}"></span></p>
     <div th:utext="${shoppingListHtml}">
         <!-- HTML tabuľka -->
     </div>
@@ -106,7 +115,7 @@
 
 <div class="footer">
     Tento plán bol vygenerovaný automaticky pomocou AI<br/>
-    dňa: <span th:text="${#dates.format(#dates.createNow(), 'd. M. yyyy')}"></span> na stránke dietnyplan.sk
+    dňa: <span th:text="${#dates.format(#dates.createNow(), 'd. M. yyyy')}"/> na stránke dietnyplan.sk
 </div>
 
 </body>

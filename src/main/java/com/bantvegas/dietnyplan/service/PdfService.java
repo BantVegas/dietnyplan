@@ -30,7 +30,6 @@ public class PdfService {
 
     public byte[] generatePdf(String planContent) throws Exception {
         try {
-            // 🔧 1. Vygeneruj HTML obsah
             String structuredPlan = HtmlPlanFormatter.formatToHtml(planContent);
             Map<String, ShoppingListBuilder.Ingredient> shoppingList = ShoppingListBuilder.extractShoppingList(planContent);
             String shoppingListHtml = ShoppingListBuilder.toHtmlTable(shoppingList);
@@ -38,22 +37,19 @@ public class PdfService {
             Context context = new Context();
             context.setVariable("structuredPlan", structuredPlan);
             context.setVariable("shoppingListHtml", shoppingListHtml);
+            context.setVariable("shoppingItemCount", shoppingList.size());
+
+            // dočasné hodnoty, v ostrej verzii vlož z DietRequest
+            context.setVariable("name", "Martina");
+            context.setVariable("goal", "schudnúť");
+            context.setVariable("weight", 78);
 
             String html = templateEngine.process("pdf", context);
+            log.debug("📄 Generated HTML:\n{}", html);
 
-            // 🔍 Debug log pre HTML
-            log.debug("Generated HTML for PDF:\n{}", html);
-
-            // 🚨 Validácia HTML štruktúry
-            if (!html.contains("<html") || !html.contains("</html>")) {
-                throw new IllegalArgumentException("Vygenerované HTML nie je kompletné. PDF sa nevytvorí.");
-            }
-
-            // 🧾 2. Inicializuj renderer
             ITextRenderer renderer = new ITextRenderer();
             ITextFontResolver fontResolver = renderer.getFontResolver();
 
-            // 📁 3. Načítaj font z classpath (funguje aj v JAR)
             ClassPathResource fontResource = new ClassPathResource("fonts/DejaVuSans.ttf");
             File tempFont = File.createTempFile("dejavu", ".ttf");
             try (InputStream fontStream = fontResource.getInputStream()) {
@@ -61,14 +57,11 @@ public class PdfService {
             }
 
             fontResolver.addFont(tempFont.getAbsolutePath(), BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-
-            // 📄 4. Vygeneruj PDF
             renderer.setDocumentFromString(html);
             renderer.layout();
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             renderer.createPDF(baos);
-
             return baos.toByteArray();
 
         } catch (Exception e) {
