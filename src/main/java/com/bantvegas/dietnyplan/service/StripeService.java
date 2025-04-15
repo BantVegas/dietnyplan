@@ -3,12 +3,14 @@ package com.bantvegas.dietnyplan.service;
 import com.stripe.Stripe;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-@Slf4j
+import java.util.Map;
+
 @Service
+@RequiredArgsConstructor
 public class StripeService {
 
     @Value("${stripe.secret-key}")
@@ -21,9 +23,9 @@ public class StripeService {
     private String cancelUrl;
 
     public String createCheckoutSession(String email) {
-        try {
-            Stripe.apiKey = stripeSecretKey;
+        Stripe.apiKey = stripeSecretKey;
 
+        try {
             SessionCreateParams params = SessionCreateParams.builder()
                     .setMode(SessionCreateParams.Mode.PAYMENT)
                     .setSuccessUrl(successUrl)
@@ -31,19 +33,17 @@ public class StripeService {
                     .setCustomerEmail(email)
                     .addLineItem(
                             SessionCreateParams.LineItem.builder()
-                                    .setPrice("price_1RDsuS11bNoUWC3y3yBih3s2")
+                                    .setPrice("price_XXXXXXX") // ← Nahraď svojím Stripe Price ID
                                     .setQuantity(1L)
                                     .build()
                     )
                     .build();
 
             Session session = Session.create(params);
-            log.info("✅ Stripe Checkout session created: {}", session.getId());
             return session.getUrl();
 
         } catch (Exception e) {
-            log.error("❌ Chyba pri vytváraní Stripe session", e);
-            return null;
+            throw new RuntimeException("Stripe checkout session failed", e);
         }
     }
 }

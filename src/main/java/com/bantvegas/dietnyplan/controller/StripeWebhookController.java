@@ -1,9 +1,10 @@
 package com.bantvegas.dietnyplan.controller;
 
 import com.bantvegas.dietnyplan.service.DietService;
+import com.stripe.exception.SignatureVerificationException;
+import com.stripe.model.Event;
 import com.stripe.model.checkout.Session;
 import com.stripe.net.Webhook;
-import com.stripe.model.Event;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,8 +22,8 @@ public class StripeWebhookController {
     private String endpointSecret;
 
     @PostMapping("/webhook")
-    public ResponseEntity<String> handleStripeWebhook(@RequestBody String payload,
-                                                      @RequestHeader("Stripe-Signature") String sigHeader) {
+    public ResponseEntity<String> handleWebhook(@RequestBody String payload,
+                                                @RequestHeader("Stripe-Signature") String sigHeader) {
         try {
             Event event = Webhook.constructEvent(payload, sigHeader, endpointSecret);
 
@@ -32,20 +33,22 @@ public class StripeWebhookController {
                         .orElseThrow();
 
                 String email = session.getCustomerEmail();
-                log.info("✅ Stripe platba potvrdená pre: {}", email);
+                log.info("✅ Platba potvrdená pre: {}", email);
 
-                // Vygeneruj plán a ulož token
                 String plan = dietService.generatePlanForEmail(email);
                 String token = dietService.storePlan(plan);
 
-                log.info("📄 Plán vygenerovaný a uložený pre: {}", email);
+                log.info("📝 Plán vygenerovaný pre {} – token: {}", email, token);
             }
 
-            return ResponseEntity.ok("OK");
+            return ResponseEntity.ok("Webhook processed");
 
+        } catch (SignatureVerificationException e) {
+            log.error("❌ Neplatný podpis webhooku", e);
+            return ResponseEntity.status(400).body("Invalid signature");
         } catch (Exception e) {
-            log.error("❌ Chyba pri spracovaní Stripe webhooku", e);
-            return ResponseEntity.badRequest().body("Webhook error");
+            log.error("❌ Chyba vo webhook spracovaní", e);
+            return ResponseEntity.status(500).body("Webhook error");
         }
     }
 }
