@@ -1,4 +1,4 @@
-// DietService.java – rozšírené o možnosť uchovať plán pre stiahnutie ako PDF
+// DietService.java – rozšírené o fix PDF generovania s plánom
 
 package com.bantvegas.dietnyplan.service;
 
@@ -55,7 +55,13 @@ public class DietService {
 
             List<Map<String, Object>> choices = (List<Map<String, Object>>) response.get("choices");
             Map<String, Object> message = (Map<String, Object>) choices.get(0).get("message");
-            return (String) message.get("content");
+            String plan = (String) message.get("content");
+
+            if (plan == null || plan.isBlank()) {
+                throw new IllegalStateException("❌ AI vrátilo prázdny plán. PDF sa negeneruje.");
+            }
+
+            return plan;
 
         } catch (Exception e) {
             e.printStackTrace();

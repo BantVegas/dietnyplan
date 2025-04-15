@@ -3,9 +3,11 @@ package com.bantvegas.dietnyplan.service;
 import com.stripe.Stripe;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class StripeService {
 
@@ -23,25 +25,24 @@ public class StripeService {
             Stripe.apiKey = stripeSecretKey;
 
             SessionCreateParams params = SessionCreateParams.builder()
-                    .setMode(SessionCreateParams.Mode.PAYMENT) // ✅ jednorazová platba
+                    .setMode(SessionCreateParams.Mode.PAYMENT)
                     .setSuccessUrl(successUrl)
                     .setCancelUrl(cancelUrl)
+                    .setCustomerEmail(email)
                     .addLineItem(
                             SessionCreateParams.LineItem.builder()
-                                    .setPrice("price_1RDsuS11bNoUWC3y3yBih3s2") // ✅ nový one-time price ID
+                                    .setPrice("price_1RDsuS11bNoUWC3y3yBih3s2")
                                     .setQuantity(1L)
                                     .build()
                     )
-                    .setCustomerEmail(email)
                     .build();
 
             Session session = Session.create(params);
-            System.out.println("✅ Stripe Checkout URL: " + session.getUrl());
+            log.info("✅ Stripe Checkout session created: {}", session.getId());
             return session.getUrl();
 
         } catch (Exception e) {
-            System.out.println("❌ Chyba pri vytváraní Stripe session: " + e.getMessage());
-            e.printStackTrace();
+            log.error("❌ Chyba pri vytváraní Stripe session", e);
             return null;
         }
     }
