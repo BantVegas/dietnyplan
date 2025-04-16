@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/stripe") // 👉 toto zabezpečí správny prefix
 public class StripeWebhookController {
 
     private final DietService dietService;
@@ -41,16 +42,16 @@ public class StripeWebhookController {
                 String email = session.getCustomerEmail();
                 log.info("✅ Platba potvrdená pre: {}", email);
 
-                // 1. vygeneruj plán
+                // 1. Vygeneruj plán
                 String plan = dietService.generatePlanForEmail(email);
 
-                // 2. ulož plán do storage + token
+                // 2. Ulož plán + token (ak používaš)
                 String token = dietService.storePlan(plan, email);
 
-                // 3. vygeneruj PDF
+                // 3. Vygeneruj PDF
                 byte[] pdf = pdfService.generatePdf(plan);
 
-                // 4. pošli email s PDF
+                // 4. Pošli email
                 mailService.sendPdf(email, pdf);
 
                 log.info("📤 PDF plán odoslaný e-mailom pre: {}", email);
