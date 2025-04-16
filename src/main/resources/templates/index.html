@@ -13,6 +13,16 @@
         'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
     })(window,document,'script','dataLayer','GTM-PHRC7KB4');</script>
     <!-- End Google Tag Manager -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#198754">
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then(reg => console.log('✅ Service Worker zaregistrovaný'))
+                .catch(err => console.error('❌ Service Worker chyba:', err));
+        }
+    </script>
+
 </head>
 <body class="bg-light">
 
