@@ -22,6 +22,9 @@ public class StripeService {
     @Value("${stripe.cancel-url}")
     private String cancelUrl;
 
+    @Value("${stripe.price-id}")
+    private String priceId;
+
     public String createCheckoutSession(String email) {
         Stripe.apiKey = stripeSecretKey;
 
@@ -33,7 +36,7 @@ public class StripeService {
                     .setCustomerEmail(email)
                     .addLineItem(
                             SessionCreateParams.LineItem.builder()
-                                    .setPrice("price_XXXXXXX") // ← Nahraď svojím Stripe Price ID
+                                    .setPrice(priceId)
                                     .setQuantity(1L)
                                     .build()
                     )
