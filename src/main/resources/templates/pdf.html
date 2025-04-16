@@ -95,7 +95,6 @@
 <body>
 
 <div class="header-box">
-
     <h1>Diétny plán</h1>
     <h2>pre <span th:text="${name}">Martina</span></h2>
     <p>(<span th:text="${goal}">schudnúť</span>, <span th:text="${weight}">78</span> kg)</p>
@@ -105,17 +104,15 @@
     <!-- Markdown prevedený na HTML -->
 </div>
 
-<div class="shopping-section">
+<div th:if="${shoppingItemCount > 0}" class="shopping-section">
     <h2>🛒 Nákupný zoznam</h2>
     <p>Počet položiek: <span th:text="${shoppingItemCount}"></span></p>
-    <div th:utext="${shoppingListHtml}">
-        <!-- HTML tabuľka -->
-    </div>
+    <div th:utext="${shoppingListHtml}"></div>
 </div>
 
 <div class="footer">
     Tento plán bol vygenerovaný automaticky pomocou AI<br/>
-    dňa: <span th:text="${#dates.format(#dates.createNow(), 'd. M. yyyy')}"/> na stránke dietnyplan.sk
+    dňa: <span th:text="${#dates.format(#dates.createNow(), 'd. M. yyyy')}"></span> na stránke dietnyplan.sk
 </div>
 
 </body>

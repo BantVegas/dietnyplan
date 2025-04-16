@@ -1,5 +1,7 @@
 package com.bantvegas.dietnyplan.controller;
 
+import com.bantvegas.dietnyplan.model.DietRequest;
+import com.bantvegas.dietnyplan.service.DietService;
 import com.bantvegas.dietnyplan.service.PdfService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -12,20 +14,27 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class TestController {
 
+    private final DietService dietService;
     private final PdfService pdfService;
 
-    @GetMapping("/test-pdf")
-    public ResponseEntity<byte[]> testPdf() throws Exception {
-        String markdown = """
-            ### Pondelok
-            - **Raňajky**: Ovsená kaša s banánom
-            - **Desiata**: Jablko
-            - **Obed**: Kuracie mäso s ryžou
-            - **Olovrant**: Jogurt
-            - **Večera**: Tuniakový šalát
-        """;
+    @GetMapping("/test-plan")
+    public ResponseEntity<byte[]> testPlan() throws Exception {
+        // Vytvor testovací požiadavku
+        DietRequest req = new DietRequest();
+        req.setName("Martin Test");
+        req.setAge(30);
+        req.setGender("muž");
+        req.setHeight(180);
+        req.setWeight(82);
+        req.setGoal("schudnúť");
+        req.setPreferences("žiadne");
+        req.setAllergies("bez");
 
-        byte[] pdf = pdfService.generatePdf(markdown);
+        // Vygeneruj plán
+        String plan = dietService.generatePlan(req);
+
+        // PDF
+        byte[] pdf = pdfService.generatePdf(plan);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=dietnyplan-test.pdf")

@@ -15,11 +15,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DietService {
 
     private final WebClient openAiWebClient;
+    private final PdfService pdfService;
 
-    // token → plán
     private final Map<String, String> planStorage = new ConcurrentHashMap<>();
-
-    // email → token
     private final Map<String, String> emailToTokenMap = new ConcurrentHashMap<>();
 
     public String generatePlan(DietRequest req) {
@@ -74,7 +72,6 @@ public class DietService {
         return generatePlan(demo);
     }
 
-    // ⬇️ upravená verzia
     public String storePlan(String plan, String email) {
         String token = UUID.randomUUID().toString();
         planStorage.put(token, plan);
@@ -90,6 +87,15 @@ public class DietService {
         return planStorage.get(token);
     }
 
+    public byte[] generatePdfFromPlan(String plan) {
+        try {
+            return pdfService.generatePdf(plan);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     private String buildPrompt(DietRequest req) {
         return String.format("""
                 Vygeneruj prosím diétny plán na 7 dní pre osobu s týmito údajmi:
@@ -102,10 +108,17 @@ public class DietService {
                 - Preferencie: %s
                 - Alergie: %s
 
-                Na konci každého dňa vypíš zoznam použitých surovín v štýle:
-                100g ovsené vločky, 1ks vajce, 200ml mandľové mlieko...
+                Každý deň vytvor:
+                - 5 jedál (raňajky, desiata, obed, olovrant, večera)
+                - Ku každému jedlu pridaj kalorickú hodnotu (napr. 320 kcal)
+                - V každom jedle uveď presné množstvo surovín (napr. 100g ryža, 250ml mlieko...)
 
-                Výsledok v štruktúrovanej forme (napr. Markdown).
+                Na konci celého plánu vytvor súhrnný nákupný zoznam na 7 dní v štýle:
+                - 700g kuracie prsia
+                - 10 ks vajcia
+                - 1l mandľové mlieko
+
+                Výsledok v štruktúrovanej forme, ideálne vo formáte Markdown.
                 """,
                 req.getName(),
                 req.getAge(),
@@ -141,3 +154,5 @@ public class DietService {
         }
     }
 }
+
+
