@@ -39,10 +39,10 @@ public class DietController {
 
         try {
             String plan = dietService.generatePlan(dietRequest);
-            String token = dietService.storePlan(plan);
-
+            String token = dietService.storePlan(plan, dietRequest.getEmail());
             byte[] pdf = pdfService.generatePdf(plan);
             mailService.sendPdf(dietRequest.getEmail(), pdf);
+
 
             model.addAttribute("plan", plan);
             model.addAttribute("pdfToken", token);
@@ -63,7 +63,8 @@ public class DietController {
             String email = session.getCustomerEmail();
 
             String plan = dietService.generatePlanForEmail(email);
-            String token = dietService.storePlan(plan);
+            String token = dietService.storePlan(plan, email);
+
 
             byte[] pdf = pdfService.generatePdf(plan);
             mailService.sendPdf(email, pdf);

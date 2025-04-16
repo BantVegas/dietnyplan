@@ -1,19 +1,13 @@
-// DietService.java – rozšírené o fix PDF generovania s plánom
-
 package com.bantvegas.dietnyplan.service;
 
 import com.bantvegas.dietnyplan.model.DietRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -22,8 +16,11 @@ public class DietService {
 
     private final WebClient openAiWebClient;
 
-    // 📦 Lokálny storage plánov (dočasný) pre stiahnutie ako PDF cez token
+    // token → plán
     private final Map<String, String> planStorage = new ConcurrentHashMap<>();
+
+    // email → token
+    private final Map<String, String> emailToTokenMap = new ConcurrentHashMap<>();
 
     public String generatePlan(DietRequest req) {
         try {
@@ -42,13 +39,6 @@ public class DietService {
                     .uri("/v1/chat/completions")
                     .bodyValue(requestBody)
                     .retrieve()
-                    .onStatus(
-                            status -> status.is4xxClientError() || status.is5xxServerError(),
-                            res -> res.bodyToMono(String.class).map(body -> {
-                                System.err.println("❌ Chyba OpenAI: " + body);
-                                return new RuntimeException("OpenAI error: " + body);
-                            })
-                    )
                     .bodyToMono(Map.class)
                     .retryWhen(Retry.backoff(3, Duration.ofSeconds(2)))
                     .block();
@@ -58,14 +48,14 @@ public class DietService {
             String plan = (String) message.get("content");
 
             if (plan == null || plan.isBlank()) {
-                throw new IllegalStateException("❌ AI vrátilo prázdny plán. PDF sa negeneruje.");
+                throw new IllegalStateException("❌ AI vrátilo prázdny plán.");
             }
 
             return plan;
 
         } catch (Exception e) {
             e.printStackTrace();
-            return "❌ Nepodarilo sa získať odpoveď od AI.";
+            return "❌ Nepodarilo sa získať plán od AI.";
         }
     }
 
@@ -84,10 +74,16 @@ public class DietService {
         return generatePlan(demo);
     }
 
-    public String storePlan(String plan) {
+    // ⬇️ upravená verzia
+    public String storePlan(String plan, String email) {
         String token = UUID.randomUUID().toString();
         planStorage.put(token, plan);
+        emailToTokenMap.put(email, token);
         return token;
+    }
+
+    public String getTokenByEmail(String email) {
+        return emailToTokenMap.get(email);
     }
 
     public String getPlanByToken(String token) {
@@ -106,7 +102,10 @@ public class DietService {
                 - Preferencie: %s
                 - Alergie: %s
 
-                Výsledok v štruktúrovanej forme.
+                Na konci každého dňa vypíš zoznam použitých surovín v štýle:
+                100g ovsené vločky, 1ks vajce, 200ml mandľové mlieko...
+
+                Výsledok v štruktúrovanej forme (napr. Markdown).
                 """,
                 req.getName(),
                 req.getAge(),
@@ -134,8 +133,7 @@ public class DietService {
                     .bodyToMono(Map.class)
                     .block();
 
-            String modelUsed = (String) response.get("model");
-            return "✅ Použitý model: " + modelUsed;
+            return "✅ Použitý model: " + response.get("model");
 
         } catch (Exception e) {
             e.printStackTrace();

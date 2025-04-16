@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="sk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -26,7 +26,7 @@
         <div class="col-lg-10">
             <div class="row shadow bg-white rounded p-4 gy-4">
 
-                <!-- Výhody vľavo (alebo hore na mobiloch) -->
+                <!-- Výhody -->
                 <div class="col-md-6 border-end mb-4 mb-md-0">
                     <h2 class="mb-4 text-center text-md-start">📝 Vytvor si personalizovaný diétny plán</h2>
                     <ul class="list-group list-group-flush">
@@ -40,29 +40,29 @@
                     </ul>
                 </div>
 
-                <!-- Formulár vpravo (alebo dole na mobiloch) -->
+                <!-- Formulár -->
                 <div class="col-md-6">
-                    <form th:action="@{/generate}" th:object="${dietRequest}" method="post">
-                        <div class="mb-3"><label class="form-label">Meno</label><input type="text" class="form-control" th:field="*{name}" required/></div>
-                        <div class="mb-3"><label class="form-label">Vek</label><input type="number" class="form-control" th:field="*{age}" required/></div>
+                    <form id="dietForm">
+                        <div class="mb-3"><label class="form-label">Meno</label><input type="text" class="form-control" name="name" required/></div>
+                        <div class="mb-3"><label class="form-label">Vek</label><input type="number" class="form-control" name="age" required/></div>
                         <div class="mb-3"><label class="form-label">Pohlavie</label>
-                            <select class="form-select" th:field="*{gender}">
+                            <select class="form-select" name="gender">
                                 <option value="muž">Muž</option>
                                 <option value="žena">Žena</option>
                             </select>
                         </div>
-                        <div class="mb-3"><label class="form-label">Váha (kg)</label><input type="number" class="form-control" th:field="*{weight}" required/></div>
-                        <div class="mb-3"><label class="form-label">Výška (cm)</label><input type="number" class="form-control" th:field="*{height}" required/></div>
+                        <div class="mb-3"><label class="form-label">Váha (kg)</label><input type="number" class="form-control" name="weight" required/></div>
+                        <div class="mb-3"><label class="form-label">Výška (cm)</label><input type="number" class="form-control" name="height" required/></div>
                         <div class="mb-3"><label class="form-label">Cieľ</label>
-                            <select class="form-select" th:field="*{goal}">
+                            <select class="form-select" name="goal">
                                 <option value="schudnúť">Schudnúť</option>
                                 <option value="pribrať">Pribrať</option>
                                 <option value="udržať váhu">Udržať váhu</option>
                             </select>
                         </div>
-                        <div class="mb-3"><label class="form-label">Preferencie</label><input type="text" class="form-control" th:field="*{preferences}"/></div>
-                        <div class="mb-3"><label class="form-label">Alergie / intolerancie</label><input type="text" class="form-control" th:field="*{allergies}"/></div>
-                        <div class="mb-3"><label class="form-label">E-mail</label><input type="email" class="form-control" th:field="*{email}" required/></div>
+                        <div class="mb-3"><label class="form-label">Preferencie</label><input type="text" class="form-control" name="preferences"/></div>
+                        <div class="mb-3"><label class="form-label">Alergie / intolerancie</label><input type="text" class="form-control" name="allergies"/></div>
+                        <div class="mb-3"><label class="form-label">E-mail</label><input type="email" class="form-control" name="email" required/></div>
                         <div class="d-grid">
                             <button type="submit" class="btn btn-success btn-lg w-100">📥 Získať môj plán</button>
                         </div>
@@ -73,6 +73,29 @@
         </div>
     </div>
 </div>
+
+<!-- Stripe redirect logic -->
+<script>
+    document.getElementById("dietForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        const json = Object.fromEntries(formData.entries());
+
+        const res = await fetch("/create-checkout-session", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(json)
+        });
+
+        const data = await res.json();
+        if (data.url) {
+            window.location.href = data.url;
+        } else {
+            alert("Chyba pri vytváraní Stripe platby. Skús to neskôr.");
+        }
+    });
+</script>
+
 </body>
 </html>
-

@@ -1,6 +1,8 @@
 package com.bantvegas.dietnyplan.controller;
 
 import com.bantvegas.dietnyplan.service.DietService;
+import com.bantvegas.dietnyplan.service.MailService;
+import com.bantvegas.dietnyplan.service.PdfService;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.model.Event;
 import com.stripe.model.checkout.Session;
@@ -17,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 public class StripeWebhookController {
 
     private final DietService dietService;
+    private final PdfService pdfService;
+    private final MailService mailService;
 
     @Value("${stripe.webhook-secret}")
     private String endpointSecret;
@@ -24,6 +28,8 @@ public class StripeWebhookController {
     @PostMapping("/webhook")
     public ResponseEntity<String> handleWebhook(@RequestBody String payload,
                                                 @RequestHeader("Stripe-Signature") String sigHeader) {
+        log.info("📥 Stripe webhook prijatý...");
+
         try {
             Event event = Webhook.constructEvent(payload, sigHeader, endpointSecret);
 
@@ -35,10 +41,19 @@ public class StripeWebhookController {
                 String email = session.getCustomerEmail();
                 log.info("✅ Platba potvrdená pre: {}", email);
 
+                // 1. vygeneruj plán
                 String plan = dietService.generatePlanForEmail(email);
-                String token = dietService.storePlan(plan);
 
-                log.info("📝 Plán vygenerovaný pre {} – token: {}", email, token);
+                // 2. ulož plán do storage + token
+                String token = dietService.storePlan(plan, email);
+
+                // 3. vygeneruj PDF
+                byte[] pdf = pdfService.generatePdf(plan);
+
+                // 4. pošli email s PDF
+                mailService.sendPdf(email, pdf);
+
+                log.info("📤 PDF plán odoslaný e-mailom pre: {}", email);
             }
 
             return ResponseEntity.ok("Webhook processed");
@@ -47,7 +62,7 @@ public class StripeWebhookController {
             log.error("❌ Neplatný podpis webhooku", e);
             return ResponseEntity.status(400).body("Invalid signature");
         } catch (Exception e) {
-            log.error("❌ Chyba vo webhook spracovaní", e);
+            log.error("❌ Chyba pri spracovaní Stripe webhooku", e);
             return ResponseEntity.status(500).body("Webhook error");
         }
     }
