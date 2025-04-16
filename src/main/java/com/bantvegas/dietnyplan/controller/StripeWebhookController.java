@@ -31,6 +31,13 @@ public class StripeWebhookController {
                                                 @RequestHeader(value = "Stripe-Signature", required = false) String sigHeader) {
         log.info("📥 Stripe webhook prijatý...");
 
+        // ➤ Odpovedz Stripe-u hneď
+        new Thread(() -> processWebhook(payload, sigHeader)).start();
+
+        return ResponseEntity.ok("Received");
+    }
+
+    private void processWebhook(String payload, String sigHeader) {
         try {
             Session session;
             String email;
@@ -46,19 +53,20 @@ public class StripeWebhookController {
                 Event event = Webhook.constructEvent(payload, sigHeader, endpointSecret);
 
                 if (!"checkout.session.completed".equals(event.getType())) {
-                    return ResponseEntity.ok("Event ignored");
+                    log.info("🔁 Iný typ Stripe eventu: {}", event.getType());
+                    return;
                 }
 
                 Object dataObject = event.getData().getObject();
                 if (!(dataObject instanceof Session)) {
                     log.warn("⚠️ Webhook neobsahuje objekt typu Session.");
-                    return ResponseEntity.badRequest().body("Invalid object type");
+                    return;
                 }
 
                 session = (Session) dataObject;
             }
 
-            // 👉 Tu už máš platný `Session` (z reálneho eventu alebo z testu)
+            // ✅ Pokračuj – máme validný Session
             email = session.getCustomerEmail();
             log.info("✅ Platba potvrdená pre: {}", email);
 
@@ -69,15 +77,11 @@ public class StripeWebhookController {
 
             log.info("📤 PDF plán odoslaný e-mailom pre: {}", email);
 
-            return ResponseEntity.ok("Webhook processed");
-
         } catch (SignatureVerificationException e) {
             log.error("❌ Neplatný podpis Stripe webhooku", e);
-            return ResponseEntity.status(400).body("Invalid signature");
 
         } catch (Exception e) {
             log.error("❌ Chyba pri spracovaní Stripe webhooku", e);
-            return ResponseEntity.status(500).body("Webhook error");
         }
     }
 }
