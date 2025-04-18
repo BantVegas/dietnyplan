@@ -98,28 +98,28 @@ public class DietService {
 
     private String buildPrompt(DietRequest req) {
         return String.format("""
-                Vygeneruj prosím diétny plán na 7 dní pre osobu s týmito údajmi:
-                - Meno: %s
-                - Vek: %d
-                - Pohlavie: %s
-                - Výška: %.2f cm
-                - Váha: %.2f kg
-                - Cieľ: %s
-                - Preferencie: %s
-                - Alergie: %s
+            Vygeneruj prosím diétny plán na 30 dní pre osobu s týmito údajmi:
+            - Meno: %s
+            - Vek: %d
+            - Pohlavie: %s
+            - Výška: %.2f cm
+            - Váha: %.2f kg
+            - Cieľ: %s
+            - Preferencie: %s
+            - Alergie: %s
 
-                Každý deň vytvor:
-                - 5 jedál (raňajky, desiata, obed, olovrant, večera)
-                - Ku každému jedlu pridaj kalorickú hodnotu (napr. 320 kcal)
-                - V každom jedle uveď presné množstvo surovín (napr. 100g ryža, 250ml mlieko...)
+            Každý deň vytvor:
+            - 5 jedál (raňajky, desiata, obed, olovrant, večera)
+            - Ku každému jedlu pridaj kalorickú hodnotu (napr. 320 kcal)
+            - V každom jedle uveď presné množstvo surovín (napr. 100g ryža, 250ml mlieko...)
 
-                Na konci celého plánu vytvor súhrnný nákupný zoznam na 7 dní v štýle:
-                - 700g kuracie prsia
-                - 10 ks vajcia
-                - 1l mandľové mlieko
+            Na konci celého plánu vytvor súhrnný nákupný zoznam na 30 dní v štýle:
+            - 3kg kuracie prsia
+            - 30 ks vajcia
+            - 4l mandľové mlieko
 
-                Výsledok v štruktúrovanej forme, ideálne vo formáte Markdown.
-                """,
+            Výsledok v štruktúrovanej forme, ideálne vo formáte Markdown.
+            """,
                 req.getName(),
                 req.getAge(),
                 req.getGender(),
@@ -154,5 +154,4 @@ public class DietService {
         }
     }
 }
-
 

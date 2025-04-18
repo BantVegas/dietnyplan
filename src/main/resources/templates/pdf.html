@@ -12,6 +12,7 @@
             color: #333;
             background-color: #f9f9f9;
         }
+
         .header-box {
             border: 2px solid #4CAF50;
             background-color: #e8f5e9;
@@ -20,40 +21,52 @@
             text-align: center;
             border-radius: 10px;
         }
+
         .header-box h1 {
             margin: 5px 0;
             font-size: 24px;
             color: #2e7d32;
         }
+
         .header-box h2 {
             margin: 5px 0;
             font-size: 18px;
             color: #388e3c;
         }
+
         .header-box p {
             font-size: 14px;
             color: #555;
         }
+
         .logo {
             max-height: 50px;
             margin-bottom: 10px;
         }
+
         .day-section h3 {
             margin-top: 20px;
             font-size: 16px;
             color: #1565c0;
         }
+
         .day-section ul {
             list-style-type: disc;
             padding-left: 20px;
         }
+
         .day-section {
             page-break-inside: avoid;
         }
+
         h2 {
-            margin-top: 30px;
+            margin-top: 40px;
+            font-size: 20px;
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 5px;
             color: #37474f;
         }
+
         .shopping-section {
             background-color: #fff3e0;
             border: 2px solid #ff9800;
@@ -61,9 +74,11 @@
             border-radius: 10px;
             margin-top: 30px;
         }
+
         .shopping-section h2 {
             color: #e65100;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -72,18 +87,22 @@
             border-radius: 5px;
             overflow: hidden;
         }
+
         th, td {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
         }
+
         th {
             background-color: #4CAF50;
             color: white;
         }
+
         tr:nth-child(even) {
             background-color: #f2f2f2;
         }
+
         .footer {
             margin-top: 40px;
             text-align: center;
@@ -101,18 +120,18 @@
 </div>
 
 <div class="day-section" th:utext="${structuredPlan}">
-    <!-- Markdown prevedený na HTML -->
+    <!-- Markdown prevedený na HTML (vrátane týždňov a dní) -->
 </div>
 
 <div th:if="${shoppingItemCount > 0}" class="shopping-section">
-    <h2>🛒 Nákupný zoznam</h2>
+    <h2>🛒 Mesačný nákupný zoznam</h2>
     <p>Počet položiek: <span th:text="${shoppingItemCount}"></span></p>
     <div th:utext="${shoppingListHtml}"></div>
 </div>
 
 <div class="footer">
     Tento plán bol vygenerovaný automaticky pomocou AI<br/>
-    dňa: <span th:text="${#dates.format(#dates.createNow(), 'd. M. yyyy')}"></span> na stránke dietnyplan.sk
+    dňa: <span th:text="${#dates.format(#dates.createNow(), 'd. M. yyyy')}"></span> na stránke <strong>dietnyplan.sk</strong>
 </div>
 
 </body>
