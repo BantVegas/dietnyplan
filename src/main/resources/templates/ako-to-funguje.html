@@ -3,84 +3,84 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>DietnyPlan.sk | Ako to funguje</title>
-  <meta name="description" content="Zistite, ako funguje vytvorenie vášho osobného diétneho plánu na mieru na DietnyPlan.sk.">
-  <meta name="keywords" content="ako to funguje, dietny plan, strava na mieru, proces objednavky">
-  <meta property="og:title" content="DietnyPlan.sk | Ako to funguje">
-  <meta property="og:description" content="Jednoduchý proces: vyplň, zaplať, dostaneš plán e-mailom.">
-  <meta property="og:image" content="/images/logo.png">
-  <link rel="icon" href="/images/logo.png" type="image/png">
+  <title>Ako funguje objednávka diétneho plánu | DietnyPlan.sk</title>
+  <meta name="description" content="Zisti, ako jednoducho získaš svoj 30-dňový diétny plán. Vyplň formulár, zaplať cez Stripe a dostaneš plán emailom do pár minút.">
+  <meta name="keywords" content="ako to funguje, diéta, diétny plán, objednávka plánu, dietnyplan.sk">
+  <meta property="og:title" content="Ako funguje objednávka diétneho plánu | DietnyPlan.sk">
+  <meta property="og:description" content="Vyplň dotazník, zaplať bezpečne cez Stripe a dostaneš osobný diétny plán na email. Jednoduchý 3-krokový proces.">
+  <meta property="og:url" content="https://dietnyplan.sk/ako-to-funguje">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://dietnyplan.sk/images/logo.png">
+  <link rel="canonical" href="https://dietnyplan.sk/ako-to-funguje">
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Ako funguje objednávka diétneho plánu",
+      "description": "Postup objednávky diétneho plánu na DietnyPlan.sk. Vyplň dotazník, zaplať bezpečne a dostaneš plán emailom.",
+      "url": "https://dietnyplan.sk/ako-to-funguje"
+    }
+  </script>
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
   <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: #f0f9ff;
-    }
-    header {
-      background: #ffffff;
-    }
-    .navbar-logo {
-      max-height: 60px;
-      width: auto;
-    }
-    .nav-link {
-      color: #0f172a;
-      font-weight: 600;
-      margin-left: 20px;
-    }
-    .nav-link:hover {
-      color: #0ea5e9;
-    }
-    .info-card {
-      background: #e0f2fe;
-      border-radius: 12px;
-      padding: 2rem;
-    }
-    footer {
-      background: #0ea5e9;
-      color: white;
-    }
+    body { font-family: 'Poppins', sans-serif; background: #f0f9ff; }
+    header { background: #ffffff; }
+    .nav-link { color: #0f172a; font-weight: 600; margin-left: 20px; }
+    .nav-link:hover { color: #0ea5e9; }
+    .info-card { background: #e0f2fe; border-radius: 12px; padding: 2rem; }
+    footer { background: #0ea5e9; color: white; }
   </style>
 </head>
+
 <body>
 
-<!-- Header -->
 <header class="border-bottom shadow-sm">
   <div class="container d-flex justify-content-between align-items-center py-3">
-    <a href="/index.html" class="d-flex align-items-center text-dark text-decoration-none">
-      <img src="/images/logo.png" alt="DietnyPlan.sk logo" class="navbar-logo">
+    <a href="/" class="text-decoration-none d-flex flex-column align-items-start">
+      <span style="color: #22c55e; font-size: 26px; font-weight: 700;">Dietny Plan</span>
+      <small style="color: #16a34a; font-size: 14px;">s ohľadom na vaše zdravie</small>
     </a>
-    <nav>
-      <a href="/ako-to-funguje" class="nav-link d-inline-block">Ako to funguje</a>
-      <a href="/kontakt" class="nav-link d-inline-block">Kontakt</a>
+    <nav class="d-flex align-items-center">
+      <a href="/ako-to-funguje" class="nav-link px-2">Ako to funguje</a>
+      <a href="/kontakt" class="nav-link px-2">Kontakt</a>
     </nav>
   </div>
 </header>
 
 <!-- Hlavný obsah -->
-<div class="container py-5">
-  <h1 class="text-center mb-5">Ako to funguje</h1>
+<section class="container py-5">
+  <h1 class="text-center mb-5">Ako funguje objednávka diétneho plánu</h1>
 
   <div class="info-card mx-auto" style="max-width: 800px;">
+    <p class="mb-4 text-center">Získať svoj osobný diétny plán je jednoduché a rýchle. Stačí prejsť tromi základnými krokmi:</p>
+
     <ol class="list-unstyled">
-      <li class="mb-4">
-        <h4>1. Vyplň formulár</h4>
-        <p>Vyplň krátky dotazník o tvojom veku, váhe, výške, cieli, stravovacích preferenciách a alergiách.</p>
+      <li class="mb-5">
+        <h4>1. Vyplníš jednoduchý dotazník</h4>
+        <p>V dotazníku nám povieš viac o sebe – aký je tvoj vek, váha, výška, cieľ (schudnúť, pribrať alebo udržať váhu), stravovacie preferencie a prípadné alergie či intolerancie. Vďaka týmto údajom ti pripravíme plán presne na mieru.</p>
       </li>
-      <li class="mb-4">
-        <h4>2. Zaplať bezpečne cez Stripe</h4>
-        <p>Po vyplnení formulára ąa presmerujeme na bezpečnú platobnú bránu Stripe, kde dokončíš platbu.</p>
+
+      <li class="mb-5">
+        <h4>2. Bezpečne zaplatíš cez Stripe</h4>
+        <p>Po odoslaní dotazníka ťa presmerujeme na bezpečnú platobnú bránu Stripe. Platbu môžeš pohodlne vykonať platobnou kartou, Apple Pay alebo Google Pay. Platba je zabezpečená najmodernejšími štandardmi.</p>
       </li>
-      <li class="mb-4">
+
+      <li class="mb-5">
         <h4>3. Dostaneš svoj plán e-mailom</h4>
-        <p>Po úspešnej platbe ti do pár minút dorazí kompletný 30-dňový diétny plán a nákupný zoznam vo formáte PDF priamo na tvoj e-mail.</p>
+        <p>Po úspešnej platbe automaticky spracujeme tvoje údaje a vygenerujeme tvoj 30-dňový stravovací plán vrátane nákupného zoznamu. V priebehu niekoľkých minút ti všetko príde na e-mail v prehľadnom PDF formáte pripravenom na tlač.</p>
       </li>
     </ol>
-  </div>
-</div>
 
-<!-- Footer -->
+    <div class="text-center mt-4">
+      <a href="/" class="btn btn-primary">⬅️ Späť na úvod</a>
+    </div>
+  </div>
+</section>
+
 <footer class="py-4 mt-5">
   <div class="container text-center">
     <p class="mb-1">&copy; 2025 DietnyPlan.sk – Všetky práva vyhradené.</p>
@@ -90,3 +90,4 @@
 
 </body>
 </html>
+

@@ -20,4 +20,24 @@ public class WebController {
     public String kontakt() {
         return "kontakt"; // => src/main/resources/templates/kontakt.html
     }
+
+    @GetMapping("/onas")
+    public String onas() {
+        return "onas"; // => src/main/resources/templates/onas.html
+    }
+
+    @GetMapping("/blog")
+    public String blog() {
+        return "blog"; // => src/main/resources/templates/blog.html
+    }
+
+    @GetMapping("/privacy-policy")
+    public String privacyPolicy() {
+        return "privacy-policy"; // => src/main/resources/templates/privacy-policy.html
+    }
+
+    @GetMapping("/terms")
+    public String terms() {
+        return "terms"; // => src/main/resources/templates/terms.html
+    }
 }
