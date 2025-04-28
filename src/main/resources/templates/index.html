@@ -1,103 +1,189 @@
 <!DOCTYPE html>
 <html lang="sk">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Vytvor si diétny plán</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-PHRC7KB4');</script>
-    <!-- End Google Tag Manager -->
-
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8005465650143173"
-            crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DietnyPlan.sk | Tvoj osobný diétny plán na mieru</title>
+  <meta name="description" content="Vytvor si svoj personalizovaný diétny plán na mieru. Stravovací plán na 30 dní s nákupným zoznamom a kalorickými hodnotami. Ihneď po zaplatení.">
+  <meta name="keywords" content="diétny plán, strava na mieru, plán chudnutia, zdravé stravovanie, dietny plán online, plán stravovania">
+  <meta property="og:title" content="DietnyPlan.sk | Osobný diétny plán na mieru">
+  <meta property="og:description" content="30-dňový diétny plán pripravený na mieru tvojim cieľom. Jednoducho, rýchlo, ihneď po zaplatení.">
+  <meta property="og:image" content="/images/logo.png">
+  <link rel="icon" href="/images/logo.png" type="image/png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f0f9ff;
+    }
+    header {
+      background: #ffffff;
+    }
+    .navbar-logo {
+      height: 90px;
+      width: auto;
+      max-width: 220px;
+      object-fit: contain;
+    }
+    .nav-link {
+      color: #0f172a;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 18px;
+    }
+    .nav-link:hover {
+      color: #0ea5e9;
+    }
+    .highlight {
+      color: #0ea5e9;
+    }
+    .feature-list li {
+      background: #e0f2fe;
+      border-radius: 8px;
+      padding: 10px 15px;
+      margin-bottom: 10px;
+      list-style: none;
+    }
+    .card-custom {
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    }
+    .btn-primary-custom {
+      background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+      border: none;
+      font-weight: 600;
+    }
+    .btn-primary-custom:hover {
+      background: linear-gradient(135deg, #0ea5e9, #38bdf8);
+    }
+    footer {
+      background: #0ea5e9;
+      color: white;
+    }
+    .gap-4 {
+      gap: 1.5rem;
+    }
+  </style>
 </head>
-<body class="bg-light">
+<body>
 
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PHRC7KB4"
-                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
+<!-- Header -->
+<header class="border-bottom shadow-sm">
+  <div class="container d-flex justify-content-between align-items-center py-2">
+    <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
+      <img src="/images/logo.png" alt="DietnyPlan.sk logo" class="navbar-logo">
+    </a>
+    <nav class="d-flex align-items-center gap-4">
+      <a href="/ako-to-funguje" class="nav-link d-inline-block">Ako to funguje</a>
+      <a href="/kontakt" class="nav-link d-inline-block">Kontakt</a>
+    </nav>
+  </div>
+</header>
 
+<!-- Hlavný obsah -->
 <div class="container py-5 px-3 px-md-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-10">
-            <div class="row shadow bg-white rounded p-4 gy-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <div class="row card-custom p-4 gy-4">
 
-                <!-- Výhody -->
-                <div class="col-md-6 border-end mb-4 mb-md-0">
-                    <h2 class="mb-4 text-center text-md-start">📝 Vytvor si personalizovaný <strong>mesačný</strong> diétny plán</h2>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">✅ Mesačný diétny plán bez čakania – doručený ihneď po zaplatení</li>
-                        <li class="list-group-item">🛒 Mesačný nákupný zoznam – všetky suroviny na 30 dní</li>
-                        <li class="list-group-item">🍽️ 5 jedál denne – s presnou gramážou a kalóriami</li>
-                        <li class="list-group-item">📄 PDF plán + nákup – pripravený na tlač</li>
-                        <li class="list-group-item">🧠 Vygenerované pomocou AI – na mieru tvojim cieľom</li>
-                        <li class="list-group-item">📬 <strong>Garancia doručenia</strong> – ak nedostaneš plán, pošleme znova</li>
-                        <li class="list-group-item">💡 <strong>Ako to funguje?</strong><br/>Vyplníš formulár → Zaplatíš → Plán ti príde e-mailom</li>
-                    </ul>
-                </div>
-
-                <!-- Formulár -->
-                <div class="col-md-6">
-                    <form id="dietForm">
-                        <div class="mb-3"><label class="form-label">Meno</label><input type="text" class="form-control" name="name" required/></div>
-                        <div class="mb-3"><label class="form-label">Vek</label><input type="number" class="form-control" name="age" required/></div>
-                        <div class="mb-3"><label class="form-label">Pohlavie</label>
-                            <select class="form-select" name="gender">
-                                <option value="muž">Muž</option>
-                                <option value="žena">Žena</option>
-                            </select>
-                        </div>
-                        <div class="mb-3"><label class="form-label">Váha (kg)</label><input type="number" class="form-control" name="weight" required/></div>
-                        <div class="mb-3"><label class="form-label">Výška (cm)</label><input type="number" class="form-control" name="height" required/></div>
-                        <div class="mb-3"><label class="form-label">Cieľ</label>
-                            <select class="form-select" name="goal">
-                                <option value="schudnúť">Schudnúť</option>
-                                <option value="pribrať">Pribrať</option>
-                                <option value="udržať váhu">Udržať váhu</option>
-                            </select>
-                        </div>
-                        <div class="mb-3"><label class="form-label">Preferencie</label><input type="text" class="form-control" name="preferences"/></div>
-                        <div class="mb-3"><label class="form-label">Alergie / intolerancie</label><input type="text" class="form-control" name="allergies"/></div>
-                        <div class="mb-3"><label class="form-label">E-mail</label><input type="email" class="form-control" name="email" required/></div>
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-success btn-lg w-100">📥 Získať môj 30-dňový plán</button>
-                        </div>
-                    </form>
-                </div>
-
-            </div>
+        <!-- Výhody -->
+        <div class="col-md-6 border-end mb-4 mb-md-0">
+          <h2 class="mb-4 text-center text-md-start">📝 Vytvor si personalizovaný <span class="highlight">30-dňový diétny plán</span></h2>
+          <ul class="feature-list">
+            <li>✅ Ihneď doručený po zaplatení</li>
+            <li>🛒 Kompletný nákupný zoznam na mesiac</li>
+            <li>🍽️ 5 jedál denne s presnou gramážou</li>
+            <li>📄 PDF plán pripravený na tlač</li>
+            <li>🧠 AI generované podľa tvojich cieľov</li>
+            <li>📬 Garancia doručenia do 5 minút</li>
+            <li>💡 Vyplň → Zaplať → Získaj plán</li>
+          </ul>
         </div>
+
+        <!-- Formulár -->
+        <div class="col-md-6">
+          <form id="dietForm">
+            <div class="mb-3">
+              <label class="form-label">Meno</label>
+              <input type="text" class="form-control" name="name" required />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Vek</label>
+              <input type="number" class="form-control" name="age" required />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Pohlavie</label>
+              <select class="form-select" name="gender">
+                <option value="muž">Muž</option>
+                <option value="žena">Žena</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Váha (kg)</label>
+              <input type="number" class="form-control" name="weight" required />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Výška (cm)</label>
+              <input type="number" class="form-control" name="height" required />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Cieľ</label>
+              <select class="form-select" name="goal">
+                <option value="schudnúť">Schudnúť</option>
+                <option value="pribrať">Pribrať</option>
+                <option value="udržať váhu">Udržať váhu</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Preferencie</label>
+              <input type="text" class="form-control" name="preferences" />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Alergie / intolerancie</label>
+              <input type="text" class="form-control" name="allergies" />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">E-mail</label>
+              <input type="email" class="form-control" name="email" required />
+            </div>
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary-custom btn-lg">📥 Získať môj plán</button>
+            </div>
+          </form>
+        </div>
+
+      </div>
     </div>
+  </div>
 </div>
 
-<!-- Stripe redirect logic -->
+<!-- Footer -->
+<footer class="py-4 mt-5">
+  <div class="container text-center">
+    <p class="mb-1">&copy; 2025 DietnyPlan.sk – Všetky práva vyhradené.</p>
+    <p class="mb-0">Kontakt: <a href="mailto:mojepriznaky@gmail.com" class="text-white">mojepriznaky@gmail.com</a> | Tel.: <a href="tel:+421950889523" class="text-white">0950 889 523</a></p>
+  </div>
+</footer>
+
 <script>
-    document.getElementById("dietForm").addEventListener("submit", async function (e) {
-        e.preventDefault();
-
-        const formData = new FormData(this);
-        const json = Object.fromEntries(formData.entries());
-
-        const res = await fetch("/create-checkout-session", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(json)
-        });
-
-        const data = await res.json();
-        if (data.url) {
-            window.location.href = data.url;
-        } else {
-            alert("Chyba pri vytváraní Stripe platby. Skús to neskôr.");
-        }
+  document.getElementById("dietForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    const json = Object.fromEntries(formData.entries());
+    const res = await fetch("/create-checkout-session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(json)
     });
+    const data = await res.json();
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      alert("Chyba pri vytváraní Stripe platby. Skús to neskôr.");
+    }
+  });
 </script>
 
 </body>
