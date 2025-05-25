@@ -13,10 +13,7 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**")
-                        .allowedOrigins(
-                                "https://dietnyplan.vercel.app",
-                                "https://www.dietnyplan.vercel.app"
-                        )
+                        .allowedOrigins("https://www.dietnyplan.sk", "https://dietnyplan.sk", "https://dietnyplan-frontend.vercel.app") // pridaj všetky FE domény
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(false);
