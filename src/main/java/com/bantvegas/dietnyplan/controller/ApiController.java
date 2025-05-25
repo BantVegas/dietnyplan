@@ -15,7 +15,6 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-@CrossOrigin(origins = {"http://localhost:5177", "http://localhost:5181"}) // povolené FE porty
 public class ApiController {
 
     private final DietService dietService;
@@ -35,7 +34,6 @@ public class ApiController {
      */
     @GetMapping("/stripe/session-info")
     public ResponseEntity<Map<String, Object>> getSessionInfo(@RequestParam String session_id) {
-        // Vracia email zákazníka a stav platby
         return ResponseEntity.ok(stripeService.getSessionInfo(session_id));
     }
 

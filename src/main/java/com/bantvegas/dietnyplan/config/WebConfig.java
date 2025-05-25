@@ -12,8 +12,11 @@ public class WebConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**") // POZOR! Povoliť všetko, alebo /api/**, ak máš prefix
-                        .allowedOrigins("http://localhost:5177", "http://localhost:5181")
+                registry.addMapping("/**") // povol všetky endpointy, alebo zadefinuj konkrétne napr. /api/**
+                        .allowedOrigins(
+                                "https://dietnyplan.sk",
+                                "https://www.dietnyplan.sk"
+                        )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(false);
