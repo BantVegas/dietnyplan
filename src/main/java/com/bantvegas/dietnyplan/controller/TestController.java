@@ -33,8 +33,8 @@ public class TestController {
         // Vygeneruj plán
         String plan = dietService.generatePlan(req);
 
-        // PDF
-        byte[] pdf = pdfService.generatePdf(plan);
+        // PDF (POZOR: dávame aj req)
+        byte[] pdf = pdfService.generatePdf(plan, req);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=dietnyplan-test.pdf")

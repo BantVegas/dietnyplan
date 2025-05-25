@@ -1,5 +1,6 @@
 package com.bantvegas.dietnyplan.service;
 
+import com.bantvegas.dietnyplan.model.DietRequest;
 import com.bantvegas.dietnyplan.util.HtmlPlanFormatter;
 import com.bantvegas.dietnyplan.util.ShoppingListBuilder;
 import com.lowagie.text.pdf.BaseFont;
@@ -28,45 +29,41 @@ public class PdfService {
         this.templateEngine = templateEngine;
     }
 
-    public byte[] generatePdf(String planContent) throws Exception {
-        try {
-            String structuredPlan = HtmlPlanFormatter.formatToHtml(planContent);
-            Map<String, ShoppingListBuilder.Ingredient> shoppingList = ShoppingListBuilder.extractShoppingList(planContent);
-            String shoppingListHtml = ShoppingListBuilder.toHtmlTable(shoppingList);
+    public byte[] generatePdf(String planContent, DietRequest req) throws Exception {
+        String structuredPlan = HtmlPlanFormatter.formatToHtml(planContent);
+        Map<String, ShoppingListBuilder.Ingredient> shoppingList = ShoppingListBuilder.extractShoppingList(planContent);
+        String shoppingListHtml = ShoppingListBuilder.toHtmlTable(shoppingList);
 
-            Context context = new Context();
-            context.setVariable("structuredPlan", structuredPlan);
-            context.setVariable("shoppingListHtml", shoppingListHtml);
-            context.setVariable("shoppingItemCount", shoppingList.size());
+        Context context = new Context();
+        context.setVariable("structuredPlan", structuredPlan);
+        context.setVariable("shoppingListHtml", shoppingListHtml);
+        context.setVariable("shoppingItemCount", shoppingList.size());
+        context.setVariable("name", req.getName());
+        context.setVariable("goal", req.getGoal());
+        context.setVariable("weight", req.getWeight());
+        context.setVariable("age", req.getAge());
+        context.setVariable("height", req.getHeight());
+        context.setVariable("preferences", req.getPreferences());
+        context.setVariable("allergies", req.getAllergies());
 
-            // dočasné hodnoty, v ostrej verzii vlož z DietRequest
-            context.setVariable("name", "Martina");
-            context.setVariable("goal", "schudnúť");
-            context.setVariable("weight", 78);
+        String html = templateEngine.process("pdf", context);
+        log.debug("📄 Generated HTML:\n{}", html);
 
-            String html = templateEngine.process("pdf", context);
-            log.debug("📄 Generated HTML:\n{}", html);
+        ITextRenderer renderer = new ITextRenderer();
+        ITextFontResolver fontResolver = renderer.getFontResolver();
 
-            ITextRenderer renderer = new ITextRenderer();
-            ITextFontResolver fontResolver = renderer.getFontResolver();
-
-            ClassPathResource fontResource = new ClassPathResource("fonts/DejaVuSans.ttf");
-            File tempFont = File.createTempFile("dejavu", ".ttf");
-            try (InputStream fontStream = fontResource.getInputStream()) {
-                Files.copy(fontStream, tempFont.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            }
-
-            fontResolver.addFont(tempFont.getAbsolutePath(), BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-            renderer.setDocumentFromString(html);
-            renderer.layout();
-
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            renderer.createPDF(baos);
-            return baos.toByteArray();
-
-        } catch (Exception e) {
-            log.error("❌ Chyba pri generovaní PDF", e);
-            throw e;
+        ClassPathResource fontResource = new ClassPathResource("fonts/DejaVuSans.ttf");
+        File tempFont = File.createTempFile("dejavu", ".ttf");
+        try (InputStream fontStream = fontResource.getInputStream()) {
+            Files.copy(fontStream, tempFont.toPath(), StandardCopyOption.REPLACE_EXISTING);
         }
+
+        fontResolver.addFont(tempFont.getAbsolutePath(), BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+        renderer.setDocumentFromString(html);
+        renderer.layout();
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        renderer.createPDF(baos);
+        return baos.toByteArray();
     }
 }

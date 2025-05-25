@@ -18,7 +18,9 @@ public class DietService {
     private final PdfService pdfService;
 
     private final Map<String, String> planStorage = new ConcurrentHashMap<>();
+    private final Map<String, DietRequest> emailToRequestMap = new ConcurrentHashMap<>();
     private final Map<String, String> emailToTokenMap = new ConcurrentHashMap<>();
+    private final Map<String, String> tokenToEmailMap = new ConcurrentHashMap<>(); // NOVÁ mapa
 
     public String generatePlan(DietRequest req) {
         try {
@@ -72,10 +74,13 @@ public class DietService {
         return generatePlan(demo);
     }
 
-    public String storePlan(String plan, String email) {
+    // ULOŽÍ aj DietRequest k emailu
+    public String storePlan(String plan, DietRequest req) {
         String token = UUID.randomUUID().toString();
         planStorage.put(token, plan);
-        emailToTokenMap.put(email, token);
+        emailToRequestMap.put(req.getEmail(), req);
+        emailToTokenMap.put(req.getEmail(), token);
+        tokenToEmailMap.put(token, req.getEmail()); // <-- NOVÉ!
         return token;
     }
 
@@ -87,13 +92,24 @@ public class DietService {
         return planStorage.get(token);
     }
 
-    public byte[] generatePdfFromPlan(String plan) {
+    // NOVÁ verzia — potrebuješ DietRequest!
+    public byte[] generatePdfFromPlan(String plan, DietRequest req) {
         try {
-            return pdfService.generatePdf(plan);
+            return pdfService.generatePdf(plan, req);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
+    }
+
+    // Ak máš token a potrebuješ DietRequest (napr. pre PDF generovanie podľa tokenu)
+    public DietRequest getRequestByEmail(String email) {
+        return emailToRequestMap.get(email);
+    }
+
+    // NOVÁ METÓDA: Získa email podľa tokenu
+    public String getEmailByToken(String token) {
+        return tokenToEmailMap.get(token);
     }
 
     private String buildPrompt(DietRequest req) {
@@ -154,4 +170,3 @@ public class DietService {
         }
     }
 }
-

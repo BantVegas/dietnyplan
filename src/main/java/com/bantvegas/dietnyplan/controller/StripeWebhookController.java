@@ -1,5 +1,6 @@
 package com.bantvegas.dietnyplan.controller;
 
+import com.bantvegas.dietnyplan.model.DietRequest;
 import com.bantvegas.dietnyplan.service.DietService;
 import com.bantvegas.dietnyplan.service.MailService;
 import com.bantvegas.dietnyplan.service.PdfService;
@@ -70,9 +71,23 @@ public class StripeWebhookController {
             email = session.getCustomerEmail();
             log.info("✅ Platba potvrdená pre: {}", email);
 
-            String plan = dietService.generatePlanForEmail(email);
-            String token = dietService.storePlan(plan, email);
-            byte[] pdf = pdfService.generatePdf(plan);
+            // Nájdi pôvodný DietRequest podľa emailu (musí byť uložený pri vytváraní objednávky)
+            DietRequest req = dietService.getRequestByEmail(email);
+            if (req == null) {
+                log.error("❌ DietRequest pre email {} neexistuje!", email);
+                return;
+            }
+
+            // Vygeneruj plán podľa údajov z requestu
+            String plan = dietService.generatePlan(req);
+
+            // Ulož plán spolu s requestom
+            String token = dietService.storePlan(plan, req);
+
+            // Vygeneruj PDF podľa requestu a plánu
+            byte[] pdf = pdfService.generatePdf(plan, req);
+
+            // Pošli PDF na email
             mailService.sendPdf(email, pdf);
 
             log.info("📤 PDF plán odoslaný e-mailom pre: {}", email);

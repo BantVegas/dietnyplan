@@ -16,7 +16,8 @@ public class StripeController {
 
     @PostMapping("/create-checkout-session")
     public ResponseEntity<Map<String, String>> createSession(@RequestBody DietRequest req) {
-        String url = stripeService.createCheckoutSession(req.getEmail());
+        String url = stripeService.createCheckoutSession(req);
         return ResponseEntity.ok(Map.of("url", url));
     }
 }
+
