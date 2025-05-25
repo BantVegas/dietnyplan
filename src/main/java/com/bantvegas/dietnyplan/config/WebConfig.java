@@ -12,11 +12,8 @@ public class WebConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**") // povol všetky endpointy, alebo zadefinuj konkrétne napr. /api/**
-                        .allowedOrigins(
-                                "https://dietnyplan.sk",
-                                "https://www.dietnyplan.sk"
-                        )
+                registry.addMapping("/api/**")
+                        .allowedOrigins("https://dietnyplan.vercel.app")  // tvoja produkčná FE doména na Vercel
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(false);

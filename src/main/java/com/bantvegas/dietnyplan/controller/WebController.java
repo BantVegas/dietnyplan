@@ -6,12 +6,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class WebController {
 
-    // Forward len pre ne-API a ne-static cesty (teda iba frontendové routy)
+    // Pre všetky cesty, ktoré nie sú API ani statické zdroje,
+    // presmeruj na index.html (SPA entry point)
     @GetMapping({
             "/",
             "/{x:[\\w\\-]+}",
-            "/{x:^(?!api|static|assets|favicon).*}/{y:[\\w\\-]+}",
-            "/{x:^(?!api|static|assets|favicon).*}/{y:[\\w\\-]+}/{z:[\\w\\-]+}"
+            "/{x:[\\w\\-]+}/{y:[\\w\\-]+}",
+            "/{x:[\\w\\-]+}/{y:[\\w\\-]+}/{z:[\\w\\-]+}"
     })
     public String forwardSPA() {
         return "forward:/index.html";
