@@ -20,8 +20,10 @@ public class ApiController {
     @PostMapping("/create-checkout-session")
     public ResponseEntity<Map<String, String>> createCheckoutSession(@RequestBody DietRequest req) {
         String url = stripeService.createCheckoutSession(req);
+        // uloz dietRequest v DietService alebo kde treba
+        dietService.storeDietRequest(req);
         return ResponseEntity.ok(Map.of("url", url));
     }
 
-    // Ďalšie endpointy podľa potreby ...
+    // ďalšie API endpointy podľa potreby
 }

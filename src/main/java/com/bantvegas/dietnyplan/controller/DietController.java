@@ -21,7 +21,6 @@ public class DietController {
     @Value("${stripe.secret-key}")
     private String stripeSecretKey;
 
-    // Zobrazenie success stránky po úspešnej platbe
     @GetMapping("/success")
     public String success(@RequestParam("session_id") String sessionId, Model model) {
         try {
@@ -37,29 +36,20 @@ public class DietController {
         }
     }
 
-    // (voliteľné) Stiahnutie PDF podľa tokenu
     @GetMapping("/download-pdf")
     public ResponseEntity<byte[]> downloadPdf(@RequestParam String token) {
-        try {
-            String plan = dietService.getPlanByToken(token);
-            if (plan == null) {
-                return ResponseEntity.notFound().build();
-            }
-
-            // Tu ziskaj DietRequest podľa tokenu/emailu
-            String email = dietService.getEmailByToken(token);
-            DietRequest req = dietService.getRequestByEmail(email);
-
-            if (req == null) {
-                return ResponseEntity.status(404).body(null);
-            }
-
-            byte[] pdf = dietService.generatePdfFromPlan(plan, req);
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=dietny-plan.pdf")
-                    .body(pdf);
-        } catch (Exception e) {
-            return ResponseEntity.status(500).build();
+        String plan = dietService.getPlanByToken(token);
+        if (plan == null) {
+            return ResponseEntity.notFound().build();
         }
+        String email = dietService.getEmailByToken(token);
+        DietRequest req = dietService.getRequestByEmail(email);
+        if (req == null) {
+            return ResponseEntity.notFound().build();
+        }
+        byte[] pdf = dietService.generatePdfFromPlan(plan, req);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=dietny-plan.pdf")
+                .body(pdf);
     }
 }
