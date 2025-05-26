@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Diétny plán pre [[${name}]]</title>
+    <style>
+        body { font-family: DejaVu Sans, sans-serif; }
+        h1 { color: #2c3e50; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; }
+        th { background-color: #f4f4f4; }
+    </style>
+</head>
+<body>
+<h1>Diétny plán pre <span th:text="${name}">Meno</span></h1>
+
+<p><strong>Cieľ:</strong> <span th:text="${goal}">cieľ</span></p>
+<p><strong>Vek:</strong> <span th:text="${age}">vek</span> rokov</p>
+<p><strong>Výška:</strong> <span th:text="${height}">výška</span> cm</p>
+<p><strong>Váha:</strong> <span th:text="${weight}">váha</span> kg</p>
+<p><strong>Preferencie:</strong> <span th:text="${preferences}">preferencie</span></p>
+<p><strong>Alergie:</strong> <span th:text="${allergies}">alergie</span></p>
+
+<h2>Plán stravovania</h2>
+<div th:utext="${structuredPlan}">
+    <!-- Tu sa vloží naformátovaný diétny plán vo formáte HTML -->
+</div>
+
+<h2>Nákupný zoznam (počet položiek: <span th:text="${shoppingItemCount}">0</span>)</h2>
+<div th:utext="${shoppingListHtml}">
+    <!-- Tu sa vloží tabuľka s nákupným zoznamom -->
+</div>
+</body>
+</html>
