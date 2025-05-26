@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Platba úspešná | dietnyplan.sk</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #a0e9d5, #69b3a2);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #004d40;
+        }
+        .container {
+            background: white;
+            padding: 3rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            max-width: 480px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #00796b;
+        }
+        p {
+            font-size: 1.125rem;
+            margin-bottom: 1.5rem;
+        }
+        .email {
+            font-weight: 700;
+            color: #004d40;
+        }
+        a.button {
+            display: inline-block;
+            background-color: #00796b;
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        a.button:hover {
+            background-color: #004d40;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>✅ Platba prebehla úspešne!</h1>
+    <p>
+        Diétny plán bol odoslaný na e-mail:
+        <span class="email" th:text="${message}">tvoj.email@priklad.sk</span>
+    </p>
+    <a href="/" class="button">Späť na domovskú stránku</a>
+</div>
+</body>
+</html>
