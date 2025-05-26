@@ -20,7 +20,12 @@ public class DietService {
     private final Map<String, String> planStorage = new ConcurrentHashMap<>();
     private final Map<String, DietRequest> emailToRequestMap = new ConcurrentHashMap<>();
     private final Map<String, String> emailToTokenMap = new ConcurrentHashMap<>();
-    private final Map<String, String> tokenToEmailMap = new ConcurrentHashMap<>(); // NOVÁ mapa
+    private final Map<String, String> tokenToEmailMap = new ConcurrentHashMap<>();
+
+    // NOVÁ metóda: Uloží len DietRequest (bez generovania plánu)
+    public void storeDietRequest(DietRequest req) {
+        emailToRequestMap.put(req.getEmail(), req);
+    }
 
     public String generatePlan(DietRequest req) {
         try {
@@ -74,13 +79,13 @@ public class DietService {
         return generatePlan(demo);
     }
 
-    // ULOŽÍ aj DietRequest k emailu
+    // ULOŽÍ plán spolu s DietRequest a vráti token
     public String storePlan(String plan, DietRequest req) {
         String token = UUID.randomUUID().toString();
         planStorage.put(token, plan);
         emailToRequestMap.put(req.getEmail(), req);
         emailToTokenMap.put(req.getEmail(), token);
-        tokenToEmailMap.put(token, req.getEmail()); // <-- NOVÉ!
+        tokenToEmailMap.put(token, req.getEmail());
         return token;
     }
 
@@ -92,7 +97,6 @@ public class DietService {
         return planStorage.get(token);
     }
 
-    // NOVÁ verzia — potrebuješ DietRequest!
     public byte[] generatePdfFromPlan(String plan, DietRequest req) {
         try {
             return pdfService.generatePdf(plan, req);
@@ -102,12 +106,10 @@ public class DietService {
         }
     }
 
-    // Ak máš token a potrebuješ DietRequest (napr. pre PDF generovanie podľa tokenu)
     public DietRequest getRequestByEmail(String email) {
         return emailToRequestMap.get(email);
     }
 
-    // NOVÁ METÓDA: Získa email podľa tokenu
     public String getEmailByToken(String token) {
         return tokenToEmailMap.get(token);
     }
@@ -142,8 +144,8 @@ public class DietService {
                 req.getHeight(),
                 req.getWeight(),
                 req.getGoal(),
-                req.getPreferences(),
-                req.getAllergies()
+                req.getPreferences() != null ? req.getPreferences() : "",
+                req.getAllergies() != null ? req.getAllergies() : ""
         );
     }
 
